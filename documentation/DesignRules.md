@@ -1,33 +1,264 @@
-# DESIGN SYSTEM & UI GUIDELINES
+# Hushu – Design Rules v2
 
-You act as a World-Class UI/UX Designer specializing in "Spiritual & Mindfulness" applications. 
-Your goal is to create an interface that rivals "Hallow" but with a distinct "Modern Islamic" aesthetic.
+> **Purpose**: Define a calm, sacred, modern visual language for Hushu.
+> The UI must feel like a quiet sanctuary at night — restrained, reverent, and human.
+> Inspiration is drawn from Hallow **without imitation**.
 
-## 1. Core Philosophy: "Serene & Faceless"
-- **Atmosphere:** The app should feel like a sanctuary. Calm, deep, and premium.
-- **Faceless Minimalism:** Never use realistic human faces. Use abstract silhouettes, hands, nature elements (moon, stars, desert), or Islamic geometry.
-- **Emotional depth:** Use lighting, shadows, and gradients to create depth. Avoid flat, boring colors.
+---
 
-## 2. Color Palette (Dark Mode First)
-- **Background:** Deep Anthracite / Midnight Blue (`#0F172A` or `#020617`). Never use pure black (`#000000`).
-- **Primary Accent:** Divine Gold (`#D4AF37`) - Use sparingly for CTAs and progress bars.
-- **Secondary Accent:** Serene Teal / Emerald (`#14B8A6`) - For calming elements and success states.
-- **Surface/Cards:** Lighter Midnight (`#1E293B`) with very subtle borders (`rgba(255,255,255,0.05)`).
-- **Text:** - Headings: Off-White / Cream (`#F8FAFC`).
-  - Body: Soft Grey (`#94A3B8`).
+## 0. Prime Directive
 
-## 3. Typography
-- **Headings:** Serif font (e.g., *Playfair Display*, *Lora*). Used for titles to evoke wisdom and tradition.
-- **Body:** Clean Sans-Serif (e.g., *Inter*, *Nunito*). Used for readability in menus and descriptions.
+> **If a design choice feels expressive, decorative, or loud — remove it.**
+>
+> Calm comes from restraint, not creativity.
 
-## 4. UI Component Rules
-- **Cards:** Rounded corners (Border Radius: 16px to 24px).
-- **Spacing:** Use generous padding. Let the content breathe (Whitespace is part of the design).
-- **Feedback:** Every button press should have a subtle visual opacity change and haptic feedback.
-- **Gradients:** Use subtle vertical linear gradients on backgrounds to mimic the sky at dawn/dusk.
+The UI should *disappear*, allowing the user to feel guided rather than stimulated.
 
-## 5. Instruction for the Agent
-When generating UI code:
-1. Don't ask for design decisions; apply these rules automatically.
-2. If a specific color isn't defined, pick one that fits the "Midnight & Gold" theme.
-3. Always implement `SafeAreaView` correctly.
+---
+
+## 1. Core Philosophy — "Midnight Sanctuary"
+
+* **Atmosphere**: Night, silence, inner focus
+* **Emotion**: Safety, humility, softness, guidance
+* **Avoid**: Productivity-app energy, startup polish, wellness clichés
+
+### What Hushu is NOT
+
+* Not a tech product
+* Not a gamified habit tracker
+* Not a colorful content library
+
+### What Hushu IS
+
+* A spiritual companion
+* A quiet guide
+* A place you return to when you need grounding
+
+---
+
+## 2. Color System — Silence First
+
+### 2.1 Screen Backgrounds (Immutable Rule)
+
+> ❌ NO gradients. Ever.
+
+* **Primary Background**: `#020617` (Near-black, Slate 950)
+* **Secondary Background**: `#0F172A` (Slate 900)
+
+Use **one background color per screen**.
+Do not mix backgrounds within a single screen.
+
+---
+
+### 2.2 Surfaces & Cards — Low Contrast by Default
+
+Cards must *emerge gently* from the background.
+
+* **Primary Surface**: `#111827`
+* **Secondary Surface**: `#162021`
+* **Borders (optional)**: `rgba(255,255,255,0.04)`
+
+> If you can clearly see the card edge, it is too strong.
+
+No drop shadows unless absolutely necessary.
+
+---
+
+### 2.3 Accent Colors — Ritual Use Only
+
+Accent colors are **sacred**. They appear only at moments of meaning.
+
+#### Primary Ritual Accent
+
+* **Creased Khaki**: `#F8D794`
+
+Used ONLY for:
+
+* Primary CTA buttons
+* Completion moments ("You've done today's reading")
+* Selected states that represent commitment
+
+❌ Never use Khaki for decoration
+❌ Never use Khaki in large quantities
+
+#### Structural Accent
+
+* **Deep Emerald**: `#284139`
+
+Used ONLY for:
+
+* Selected card borders
+* Progress indicators
+* Active navigation states
+
+#### Warm Accent (Extremely Rare)
+
+* **Earth Ember**: `#BB6830`
+
+Used ONLY for:
+
+* Emotional warmth moments
+* Anxiety / sadness guidance
+* Never in standard flows
+
+---
+
+## 3. Typography — Reading Is Sacred
+
+### 3.1 Font Roles
+
+* **Headings**: Serif (Playfair Display / Lora)
+
+  * Used sparingly
+  * Large, calm, unhurried
+
+* **Body Text**: Sans-serif (Inter / Nunito)
+
+  * Optimized for long reading
+  * Slightly loose line-height
+
+---
+
+### 3.2 Typography Hierarchy
+
+* **Scripture / Qur'an Text**
+
+  * Largest body size
+  * Highest contrast
+  * Maximum line-height
+
+* **Guidance Text**
+
+  * Gentle tone
+  * Never instructional
+
+* **Metadata (dates, labels)**
+
+  * Muted color
+  * Smaller size
+
+> If text feels like UI instead of language, reduce its emphasis.
+
+---
+
+## 4. Layout — Vertical Stillness
+
+* Prefer **vertical flow**
+* Avoid dense grids unless browsing content
+* Home screen should feel like a slow scroll, not a dashboard
+
+### Spacing Rules
+
+* Use space generously
+* Silence is created through emptiness
+
+Spacing scale:
+
+* xs: 4
+* sm: 8
+* md: 16
+* lg: 24
+* xl: 32
+* xxl: 48
+
+---
+
+## 5. Cards & Containers
+
+### Default Card Style
+
+* Radius: 16–24px
+* Background: Surface color
+* No strong borders
+* No gradients
+
+Cards should feel **soft and heavy**, not sharp or floating.
+
+---
+
+## 6. Buttons — Acts, Not Controls
+
+### Primary Button
+
+* Background: `#F8D794`
+* Text: `#111A19`
+* Full width
+* Radius: 24px
+
+Used ONLY when:
+
+* The user commits
+* The user begins or completes something meaningful
+
+### Secondary / Ghost Button
+
+* Border: `rgba(255,255,255,0.12)`
+* Text: Muted
+
+Never compete visually with primary buttons.
+
+---
+
+## 7. Selection States
+
+Selection should feel like **acknowledgment**, not activation.
+
+* Selected cards:
+
+  * Thin emerald border
+  * Very subtle glow
+
+* Unselected cards:
+
+  * Flat
+  * Quiet
+
+No animations that draw attention to selection.
+
+---
+
+## 8. Illustrations & Imagery
+
+* **No realistic faces**
+* Use:
+
+  * Nature
+  * Night sky
+  * Light through darkness
+  * Abstract geometry
+
+Illustrations must:
+
+* Support mood
+* Never dominate content
+
+Use placeholders during MVP.
+
+---
+
+## 9. Motion & Feedback
+
+* Motion should reassure, not delight
+* Use fades and gentle transitions
+* No bouncy or playful animations
+
+Haptics:
+
+* Only for confirmation
+* Never for discovery
+
+---
+
+## 10. Agent Enforcement Rules
+
+When generating UI or code:
+
+1. Do not ask design questions
+2. Apply restraint by default
+3. If unsure, reduce emphasis
+4. Calm > clarity > beauty
+5. No decorative elements
+6. No gradients
+7. No loud contrasts
+
+> **The UI should feel like it was always there.**
