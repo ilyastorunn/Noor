@@ -2,7 +2,7 @@
 
 **API:** Quran.com API (https://api.qurancdn.com/)
 
-**Purpose:** Fetch Qur'an text (Arabic, English, Turkish) with hybrid offline strategy.
+**Purpose:** Fetch Qur'an text with a cache-first strategy that currently targets English translation only.
 
 ---
 
@@ -27,6 +27,14 @@ https://api.qurancdn.com/api/v4/
 ### Authentication
 - ❌ **No API key required** (public API)
 - ✅ Free tier is sufficient for MVP
+
+## CURRENT IMPLEMENTATION STATUS
+
+- The live app currently fetches chapters and verses from Quran.com
+- Translation is English only in the current code path
+- Verses are cached per chapter page in AsyncStorage
+- The bundled Cüz 30 strategy is still planned, not yet implemented
+- Audio endpoints remain documented here for later phases
 
 ---
 

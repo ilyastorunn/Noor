@@ -13,7 +13,7 @@ The primary language for the MVP is **English**.
 ## SCREEN 1: Splash & Welcome
 - **UI Components:** - **Logo:** Minimalist, centered.
   - **Slogan:** "Sanctuary for the Modern Soul."
-  - **Background:** Subtle animated gradient (Midnight Blue/Anthracite).
+  - **Background:** Solid midnight background with a restrained illustration overlay.
 - **Action:** - **Button:** "Bismillah / Begin"
   - **Effect:** Smooth fade-out to the next screen.
 
@@ -31,7 +31,7 @@ The primary language for the MVP is **English**.
 ## SCREEN 3: Goals Selection
 - **Title:** "What brings you here today?"
 - **Subtitle:** "Choose as many as you like."
-- **Layout:** Vertical list of selectable pill-shaped items.
+- **Layout:** 2-column card grid with image-backed selection states.
 - **Data/Options (Multi-select allowed):**
   - Grow Closer to Allah
   - Find Peace & Patience (Sabr)
@@ -51,7 +51,7 @@ The primary language for the MVP is **English**.
 
 ## SCREEN 5: Commitment (The Promise)
 - **Title:** "How much time can you set aside daily?"
-- **Subtitle:** "Consistency is key, even if it's small."
+- **Subtitle:** "Consistency is key, even if it&apos;s small."
 - **Layout:** 3 Large Cards.
 - **Data/Options:**
   - **5 min** "Start Small"

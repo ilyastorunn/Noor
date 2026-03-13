@@ -1,48 +1,64 @@
 /**
- * Hushu Design System - "Serene & Faceless"
- * Dark mode first, Midnight & Gold theme
+ * Hushu Design System - "Midnight Sanctuary" Theme v2
+ * Calm, Sacred, Modern — A quiet sanctuary at night
+ * 
+ * PRIME DIRECTIVE: If a design choice feels expressive, decorative, or loud — remove it.
+ * Calm comes from restraint, not creativity.
  */
 
 import { Platform } from 'react-native';
 
-// Core Design System Colors
+// Core Design System Colors - Midnight Sanctuary Theme
 export const DesignTokens = {
-  // Backgrounds
+  // Backgrounds - SOLID COLORS ONLY (NO GRADIENTS EVER)
+  // Use ONE background color per screen. Do not mix.
   background: {
-    primary: '#0F172A',      // Deep Anthracite / Midnight Blue
-    secondary: '#020617',    // Darker variant
-    surface: '#1E293B',      // Lighter Midnight for cards
+    primary: '#020617',      // Slate 950 - Near-black - PRIMARY screen background
+    secondary: '#0F172A',    // Slate 900 - Alternative screen background
+    surface: '#111827',      // Primary Surface - Cards (emerges gently from bg)
+    surfaceAlt: '#162021',   // Secondary Surface - Alternative card bg
   },
   
-  // Accents
+  // Accents - SACRED, RITUAL USE ONLY
+  // These appear only at moments of meaning
   accent: {
-    gold: '#D4AF37',         // Divine Gold - CTAs and progress
-    teal: '#14B8A6',         // Serene Teal - calming elements
-    emerald: '#10B981',      // Emerald variant
+    // Primary Ritual Accent - Creased Khaki
+    // ONLY for: Primary CTA, completion moments, commitment states
+    // NEVER for: Decoration, large quantities
+    primary: '#F8D794',
+    
+    // Structural Accent - Deep Emerald
+    // ONLY for: Selected card borders, progress indicators, active nav
+    emerald: '#284139',
+    
+    // Warm Accent - Earth Ember (EXTREMELY RARE)
+    // ONLY for: Emotional warmth, anxiety/sadness guidance
+    // NEVER in: Standard flows
+    earth: '#BB6830',
   },
   
-  // Text
+  // Text - Silence First
   text: {
-    heading: '#F8FAFC',      // Off-White / Cream
-    body: '#94A3B8',         // Soft Grey
-    muted: '#64748B',        // Even softer grey
+    heading: '#F8FAFC',      // Off-White / Cream - Serif headings
+    body: '#94A3B8',         // Soft Grey - Body text
+    muted: '#64748B',        // Even softer grey - Metadata, labels
+    onPrimary: '#111A19',    // Text on primary buttons (dark)
   },
   
-  // Borders & Overlays
+  // Borders - Low Contrast by Default
+  // "If you can clearly see the card edge, it is too strong."
   border: {
-    subtle: 'rgba(255,255,255,0.05)',
-    light: 'rgba(255,255,255,0.1)',
+    subtle: 'rgba(255,255,255,0.04)',   // Default border - barely visible
+    light: 'rgba(255,255,255,0.12)',    // Ghost button borders
+    selected: '#284139',                 // Emerald for selected states (thin)
   },
   
-  // Gradients (for LinearGradient)
-  gradients: {
-    midnight: ['#0F172A', '#020617'],
-    dusk: ['#1E293B', '#0F172A'],
-    dawn: ['#1E3A5F', '#0F172A'],
-  },
+  // Legacy mappings for backward compatibility
+  gold: '#F8D794',           // Now Creased Khaki (Primary Ritual Accent)
+  teal: '#284139',           // Now Deep Emerald (Structural Accent)
 };
 
-// Spacing Scale
+// Spacing Scale - Use space generously. Silence is created through emptiness.
 export const Spacing = {
   xs: 4,
   sm: 8,
@@ -52,12 +68,12 @@ export const Spacing = {
   xxl: 48,
 };
 
-// Border Radius
+// Border Radius - Cards should feel soft and heavy, not sharp or floating
 export const BorderRadius = {
   sm: 8,
   md: 16,
-  lg: 24,
-  full: 9999,
+  lg: 24,     // Default for cards (16-24px recommended)
+  full: 9999, // For badges, buttons
 };
 
 // Legacy Colors export for compatibility
@@ -73,13 +89,16 @@ export const Colors = {
   dark: {
     text: DesignTokens.text.heading,
     background: DesignTokens.background.primary,
-    tint: DesignTokens.accent.gold,
+    tint: DesignTokens.accent.primary,
     icon: DesignTokens.text.body,
-    tabIconDefault: DesignTokens.text.body,
-    tabIconSelected: DesignTokens.accent.gold,
+    tabIconDefault: DesignTokens.text.muted,
+    tabIconSelected: DesignTokens.accent.primary,
   },
 };
 
+// Font System - Reading Is Sacred
+// Headings: Serif (Playfair Display / Lora) - used sparingly, large, calm
+// Body: Sans-serif (Inter / Nunito) - optimized for long reading
 export const Fonts = Platform.select({
   ios: {
     sans: 'System',

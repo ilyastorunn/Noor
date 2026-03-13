@@ -1,87 +1,109 @@
 /**
  * Screen 1: Welcome (Splash)
- * Minimalist centered logo with slogan and subtle animated gradient
+ * Midnight Sanctuary Theme - Calm, restrained, sacred
+ * SOLID background (#020617) - NO gradients
+ * Motion should reassure, not delight
  */
 
+import { OnboardingImages } from '@/assets/images';
+import { BorderRadius, DesignTokens, Spacing } from '@/constants/theme';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
 import React, { useEffect, useRef } from 'react';
 import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Animated,
+    Animated,
+    Pressable,
+    StyleSheet,
+    Text,
+    View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
-import { DesignTokens, BorderRadius, Spacing } from '@/constants/theme';
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const devTapCount = useRef(0);
+  const devTapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 20,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, [fadeAnim, scaleAnim]);
+    // Gentle fade in - no bouncy animations
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1200,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
 
   const handleBegin = async () => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Haptics only for confirmation, never for discovery
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     
-    // Fade out animation before navigating
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 300,
+      duration: 400,
       useNativeDriver: true,
     }).start(() => {
       router.push('/onboarding/emotional-checkin');
     });
   };
 
+  // Hidden dev mode access - triple tap on logo
+  const handleLogoTap = () => {
+    devTapCount.current += 1;
+    
+    if (devTapTimer.current) {
+      clearTimeout(devTapTimer.current);
+    }
+    
+    if (devTapCount.current >= 5) {
+      devTapCount.current = 0;
+      router.push('/dev');
+      return;
+    }
+    
+    devTapTimer.current = setTimeout(() => {
+      devTapCount.current = 0;
+    }, 1000);
+  };
+
   return (
-    <LinearGradient
-      colors={[DesignTokens.background.primary, DesignTokens.background.secondary]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
+      {/* Full-screen background image - emerges from darkness */}
+      <Animated.Image
+        source={OnboardingImages.welcome}
+        style={[
+          styles.backgroundImage,
+          { opacity: fadeAnim },
+        ]}
+      />
+
+      {/* Content layer */}
       <SafeAreaView style={styles.safeArea}>
+        {/* Main Content - Vertical stillness */}
         <Animated.View
           style={[
             styles.content,
-            {
-              opacity: fadeAnim,
-              transform: [{ scale: scaleAnim }],
-            },
+            { opacity: fadeAnim },
           ]}
         >
-          {/* Logo Area */}
-          <View style={styles.logoContainer}>
+          {/* Logo Area - Minimal, restrained */}
+          {/* 5 taps to access dev tools */}
+          <Pressable style={styles.logoContainer} onPress={handleLogoTap}>
             <View style={styles.logoPlaceholder}>
               <Text style={styles.logoText}>H</Text>
             </View>
             <Text style={styles.appName}>Hushu</Text>
-          </View>
+          </Pressable>
 
-          {/* Slogan */}
+          {/* Slogan - Gentle, guiding tone */}
           <Text style={styles.slogan}>Sanctuary for the Modern Soul</Text>
 
-          {/* Decorative Element */}
+          {/* Decorative Element - Minimal */}
           <View style={styles.decorativeLine} />
         </Animated.View>
 
-        {/* CTA Button */}
+        {/* CTA Button - Acts, not controls */}
+        {/* Used only when user commits or begins something meaningful */}
         <Animated.View style={[styles.buttonContainer, { opacity: fadeAnim }]}>
           <Pressable
             onPress={handleBegin}
@@ -94,24 +116,30 @@ export default function WelcomeScreen() {
           </Pressable>
         </Animated.View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: DesignTokens.background.primary, // #020617 - Near-black
+  },
+  backgroundImage: {
+    ...StyleSheet.absoluteFillObject,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   safeArea: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.xl,
   },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
   },
   logoContainer: {
     alignItems: 'center',
@@ -121,17 +149,18 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: DesignTokens.background.surface,
-    borderWidth: 2,
-    borderColor: DesignTokens.accent.gold,
+    backgroundColor: DesignTokens.background.surface, // Emerges gently
+    borderWidth: 1,
+    borderColor: DesignTokens.border.subtle, // Very subtle border
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.md,
+    // No heavy shadows - quiet design
   },
   logoText: {
     fontSize: 48,
     fontWeight: '300',
-    color: DesignTokens.accent.gold,
+    color: DesignTokens.text.heading,
     fontFamily: 'serif',
   },
   appName: {
@@ -147,31 +176,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: Spacing.md,
     fontStyle: 'italic',
+    lineHeight: 24, // Loose line-height for reading
   },
   decorativeLine: {
     width: 60,
     height: 1,
-    backgroundColor: DesignTokens.accent.gold,
+    backgroundColor: DesignTokens.text.muted,
     marginTop: Spacing.xl,
-    opacity: 0.5,
+    opacity: 0.3,
   },
   buttonContainer: {
-    paddingHorizontal: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xl,
   },
   button: {
-    backgroundColor: DesignTokens.accent.gold,
+    backgroundColor: DesignTokens.accent.primary, // Creased Khaki - ritual use
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
-    borderRadius: BorderRadius.lg,
+    borderRadius: BorderRadius.lg, // 24px
     alignItems: 'center',
+    // Minimal shadow - calm design
   },
   buttonPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
   },
   buttonText: {
     fontSize: 18,
     fontWeight: '600',
-    color: DesignTokens.background.primary,
+    color: DesignTokens.text.onPrimary, // Dark text on khaki
   },
 });

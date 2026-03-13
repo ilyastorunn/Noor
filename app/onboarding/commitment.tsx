@@ -1,24 +1,25 @@
 /**
  * Screen 5: Commitment (The Promise)
- * 3 Large Cards for time commitment selection
+ * Midnight Sanctuary Theme - Calm, restrained, sacred
+ * Cards emerge gently from the darkness
+ * Recommended state uses emerald accent
  */
 
-import React, { useRef } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Animated,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
-import { Clock, Sparkles, Flame } from 'lucide-react-native';
-import { DesignTokens, BorderRadius, Spacing } from '@/constants/theme';
+import { BorderRadius, DesignTokens, Spacing } from '@/constants/theme';
 import { saveOnboardingData } from '@/services/storage';
 import type { Commitment } from '@/types/onboarding';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { Clock, Flame, Sparkles } from 'lucide-react-native';
+import React, { useRef } from 'react';
+import {
+    Animated,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface CommitmentOption {
   id: Commitment;
@@ -55,12 +56,13 @@ export default function CommitmentScreen() {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const handleSelect = async (commitment: Commitment) => {
+    // Haptic for commitment - this is meaningful
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await saveOnboardingData({ commitment });
 
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 300,
+      duration: 400,
       useNativeDriver: true,
     }).start(() => {
       router.push('/onboarding/loading');
@@ -68,16 +70,13 @@ export default function CommitmentScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={[DesignTokens.background.primary, DesignTokens.background.secondary]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-          {/* Header */}
+          {/* Header - Gentle, guiding tone */}
           <View style={styles.header}>
             <Text style={styles.title}>How much time can you set aside daily?</Text>
-            <Text style={styles.subtitle}>Consistency is key, even if it's small.</Text>
+            <Text style={styles.subtitle}>Consistency is key, even if it&apos;s small.</Text>
           </View>
 
           {/* Commitment Cards */}
@@ -102,11 +101,16 @@ export default function CommitmentScreen() {
                       <Text style={styles.recommendedText}>Recommended</Text>
                     </View>
                   )}
-                  <option.Icon
-                    size={32}
-                    color={option.isRecommended ? DesignTokens.accent.gold : DesignTokens.text.heading}
-                    strokeWidth={1.5}
-                  />
+                  <View style={[
+                    styles.iconContainer,
+                    option.isRecommended && styles.iconContainerRecommended,
+                  ]}>
+                    <option.Icon
+                      size={24}
+                      color={option.isRecommended ? DesignTokens.text.heading : DesignTokens.text.muted}
+                      strokeWidth={1.5}
+                    />
+                  </View>
                   <Text
                     style={[
                       styles.duration,
@@ -122,13 +126,14 @@ export default function CommitmentScreen() {
           </View>
         </Animated.View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: DesignTokens.background.primary, // #020617 - Near-black
   },
   safeArea: {
     flex: 1,
@@ -148,11 +153,13 @@ const styles = StyleSheet.create({
     fontFamily: 'serif',
     textAlign: 'center',
     marginBottom: Spacing.sm,
+    lineHeight: 36,
   },
   subtitle: {
     fontSize: 16,
-    color: DesignTokens.text.body,
+    color: DesignTokens.text.muted,
     textAlign: 'center',
+    lineHeight: 24,
   },
   cardsContainer: {
     flex: 1,
@@ -163,8 +170,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   cardPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
   },
   card: {
     backgroundColor: DesignTokens.background.surface,
@@ -174,36 +180,51 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: DesignTokens.border.subtle,
     position: 'relative',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: Spacing.md,
   },
   cardRecommended: {
-    borderColor: DesignTokens.accent.gold,
-    borderWidth: 2,
+    // Thin emerald border for recommended state
+    borderColor: DesignTokens.accent.emerald,
+    borderWidth: 1.5,
   },
   recommendedBadge: {
     position: 'absolute',
-    top: -12,
-    backgroundColor: DesignTokens.accent.gold,
+    top: -10,
+    left: Spacing.lg,
+    backgroundColor: DesignTokens.accent.emerald, // Emerald for structural accent
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
   },
   recommendedText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: DesignTokens.background.primary,
-  },
-  duration: {
-    fontSize: 32,
+    fontSize: 11,
     fontWeight: '600',
     color: DesignTokens.text.heading,
-    marginTop: Spacing.md,
+  },
+  iconContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: DesignTokens.background.surfaceAlt,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainerRecommended: {
+    backgroundColor: DesignTokens.accent.emerald,
+  },
+  duration: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: DesignTokens.text.heading,
   },
   durationRecommended: {
-    color: DesignTokens.accent.gold,
+    color: DesignTokens.text.heading, // Keep consistent
   },
   label: {
     fontSize: 14,
-    color: DesignTokens.text.body,
-    marginTop: Spacing.xs,
+    color: DesignTokens.text.muted,
+    marginLeft: 'auto',
   },
 });

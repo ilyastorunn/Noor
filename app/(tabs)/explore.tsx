@@ -1,112 +1,169 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+/**
+ * Explore Screen - Structured Exploration
+ * As per MVP Product Plan Section 4.3
+ *
+ * Purpose: Allow users to explore content without overwhelming them
+ */
 
-import { Collapsible } from '@/components/ui/collapsible';
-import { ExternalLink } from '@/components/external-link';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Fonts } from '@/constants/theme';
+import { BorderRadius, DesignTokens, Spacing } from '@/constants/theme';
+import {
+  BookOpen,
+  Calendar,
+  HandHeart,
+  Headphones,
+  Moon,
+  Users,
+} from 'lucide-react-native';
+import React from 'react';
+import {
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function TabTwoScreen() {
+const CATEGORIES = [
+  {
+    id: 'quran',
+    name: "Qur'an",
+    description: 'Daily readings and reflections',
+    icon: BookOpen,
+  },
+  {
+    id: 'duas',
+    name: 'Duas',
+    description: 'Prayers for every moment',
+    icon: HandHeart,
+  },
+  {
+    id: 'prophets',
+    name: 'Stories of the Prophets',
+    description: 'Wisdom from their journeys',
+    icon: Users,
+  },
+  {
+    id: 'special-days',
+    name: 'Special Days',
+    description: 'Ramadan, Eid, and more',
+    icon: Calendar,
+  },
+  {
+    id: 'listen',
+    name: 'Listen',
+    description: 'Audio recitations and talks',
+    icon: Headphones,
+  },
+  {
+    id: 'calm',
+    name: 'Calm / Night',
+    description: 'Peaceful content for reflection',
+    icon: Moon,
+  },
+];
+
+export default function ExploreScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={
-        <IconSymbol
-          size={310}
-          color="#808080"
-          name="chevron.left.forwardslash.chevron.right"
-          style={styles.headerImage}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText
-          type="title"
-          style={{
-            fontFamily: Fonts.rounded,
-          }}>
-          Explore
-        </ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image
-          source={require('@/assets/images/react-logo.png')}
-          style={{ width: 100, height: 100, alignSelf: 'center' }}
-        />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful{' '}
-          <ThemedText type="defaultSemiBold" style={{ fontFamily: Fonts.mono }}>
-            react-native-reanimated
-          </ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.header}>
+            <Text style={styles.title}>Explore</Text>
+            <Text style={styles.subtitle}>Explore at your own pace</Text>
+          </View>
+
+          <View style={styles.grid}>
+            {CATEGORIES.map((category) => {
+              const IconComponent = category.icon;
+              return (
+                <Pressable key={category.id} style={styles.categoryCard}>
+                  <View style={styles.iconContainer}>
+                    <IconComponent
+                      size={28}
+                      color={DesignTokens.accent.primary}
+                      strokeWidth={1.5}
+                    />
+                  </View>
+                  <Text style={styles.categoryName}>{category.name}</Text>
+                  <Text style={styles.categoryDescription}>
+                    {category.description}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    backgroundColor: DesignTokens.background.primary,
   },
-  titleContainer: {
+  safeArea: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.xxl,
+  },
+  header: {
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.xl,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: '300',
+    color: DesignTokens.text.heading,
+    fontFamily: 'serif',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: DesignTokens.text.body,
+    marginTop: Spacing.sm,
+  },
+  grid: {
     flexDirection: 'row',
-    gap: 8,
+    flexWrap: 'wrap',
+    gap: Spacing.md,
+  },
+  categoryCard: {
+    width: '47%',
+    backgroundColor: DesignTokens.background.surface,
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.lg,
+    borderWidth: 1,
+    borderColor: DesignTokens.border.subtle,
+  },
+  iconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: DesignTokens.accent.emerald,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.md,
+  },
+  categoryName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: DesignTokens.text.heading,
+    marginBottom: Spacing.xs,
+  },
+  categoryDescription: {
+    fontSize: 13,
+    color: DesignTokens.text.body,
+    lineHeight: 18,
   },
 });

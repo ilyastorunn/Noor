@@ -1,20 +1,19 @@
 /**
  * Screen 6: The Magic Loading (Processing)
- * Beautiful calming animation with rotating text
+ * Midnight Sanctuary Theme - Motion should reassure, not delight
+ * Gentle, calming animation - no bouncy or playful elements
  */
 
+import { useOnboarding } from '@/app/_layout';
+import { DesignTokens, Spacing } from '@/constants/theme';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet,
-  View,
-  Animated,
-  Easing,
+    Animated,
+    Easing,
+    StyleSheet,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import { DesignTokens, Spacing } from '@/constants/theme';
-import { completeOnboarding } from '@/services/storage';
 
 const loadingMessages = [
   'Analyzing your goals...',
@@ -23,67 +22,57 @@ const loadingMessages = [
 ];
 
 export default function LoadingScreen() {
-  const router = useRouter();
+  const { markOnboardingComplete } = useOnboarding();
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   
-  // Animation values
   const rotateAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.8)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const textOpacity = useRef(new Animated.Value(1)).current;
-  const haloScale = useRef(new Animated.Value(1)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Entrance animation
-    Animated.parallel([
-      Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 20,
-        friction: 7,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    // Gentle fade in - reassuring, not delightful
+    Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
 
-    // Continuous rotation animation
+    // Slow, calming rotation
     const rotateAnimation = Animated.loop(
       Animated.timing(rotateAnim, {
         toValue: 1,
-        duration: 8000,
+        duration: 12000, // Very slow rotation
         easing: Easing.linear,
         useNativeDriver: true,
       })
     );
     rotateAnimation.start();
 
-    // Pulsing halo animation
-    const haloAnimation = Animated.loop(
+    // Gentle pulse - not bouncy
+    const pulseAnimation = Animated.loop(
       Animated.sequence([
-        Animated.timing(haloScale, {
-          toValue: 1.2,
-          duration: 1500,
+        Animated.timing(pulseAnim, {
+          toValue: 1.1,
+          duration: 2000,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
-        Animated.timing(haloScale, {
+        Animated.timing(pulseAnim, {
           toValue: 1,
-          duration: 1500,
+          duration: 2000,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
       ])
     );
-    haloAnimation.start();
+    pulseAnimation.start();
 
-    // Text rotation
+    // Text transition - gentle fades
     const textInterval = setInterval(() => {
       Animated.timing(textOpacity, {
         toValue: 0,
-        duration: 200,
+        duration: 300,
         useNativeDriver: true,
       }).start(() => {
         setCurrentMessageIndex((prev) => {
@@ -95,32 +84,26 @@ export default function LoadingScreen() {
         });
         Animated.timing(textOpacity, {
           toValue: 1,
-          duration: 200,
+          duration: 300,
           useNativeDriver: true,
         }).start();
       });
-    }, 1500);
+    }, 1800);
 
-    // Navigate to main app after ~4 seconds
+    // Navigation after processing
     const navigationTimeout = setTimeout(async () => {
-      await completeOnboarding();
-      
-      Animated.timing(opacityAnim, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }).start(() => {
-        router.replace('/(tabs)');
-      });
-    }, 4500);
+      // Mark complete in both AsyncStorage AND React state (via context)
+      // The root layout guard will handle the redirect to /(tabs)
+      await markOnboardingComplete();
+    }, 5500);
 
     return () => {
       clearInterval(textInterval);
       clearTimeout(navigationTimeout);
       rotateAnimation.stop();
-      haloAnimation.stop();
+      pulseAnimation.stop();
     };
-  }, [rotateAnim, opacityAnim, scaleAnim, textOpacity, haloScale, router]);
+  }, [rotateAnim, opacityAnim, textOpacity, pulseAnim, markOnboardingComplete]);
 
   const spin = rotateAnim.interpolate({
     inputRange: [0, 1],
@@ -128,59 +111,53 @@ export default function LoadingScreen() {
   });
 
   return (
-    <LinearGradient
-      colors={[DesignTokens.background.primary, DesignTokens.background.secondary]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <Animated.View
           style={[
             styles.content,
-            {
-              opacity: opacityAnim,
-              transform: [{ scale: scaleAnim }],
-            },
+            { opacity: opacityAnim },
           ]}
         >
-          {/* Animated Halo */}
+          {/* Animated Element - Minimal, geometric */}
           <View style={styles.animationContainer}>
-            {/* Outer pulsing halo */}
+            {/* Outer subtle ring */}
             <Animated.View
               style={[
-                styles.haloOuter,
+                styles.outerRing,
                 {
-                  transform: [{ scale: haloScale }],
-                  opacity: haloScale.interpolate({
-                    inputRange: [1, 1.2],
-                    outputRange: [0.3, 0.1],
+                  transform: [{ scale: pulseAnim }],
+                  opacity: pulseAnim.interpolate({
+                    inputRange: [1, 1.1],
+                    outputRange: [0.15, 0.05],
                   }),
                 },
               ]}
             />
             
-            {/* Rotating geometric pattern */}
+            {/* Rotating geometric lines */}
             <Animated.View
               style={[
                 styles.rotatingElement,
                 { transform: [{ rotate: spin }] },
               ]}
             >
-              {[0, 1, 2, 3, 4, 5].map((i) => (
+              {[0, 1, 2, 3].map((i) => (
                 <View
                   key={i}
                   style={[
                     styles.geometricLine,
-                    { transform: [{ rotate: `${i * 30}deg` }] },
+                    { transform: [{ rotate: `${i * 45}deg` }] },
                   ]}
                 />
               ))}
             </Animated.View>
 
-            {/* Center element */}
+            {/* Center dot - subtle */}
             <View style={styles.centerDot} />
           </View>
 
-          {/* Loading Text */}
+          {/* Loading Text - Gentle, guiding */}
           <Animated.Text
             style={[
               styles.loadingText,
@@ -191,13 +168,14 @@ export default function LoadingScreen() {
           </Animated.Text>
         </Animated.View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: DesignTokens.background.primary, // #020617 - Near-black
   },
   safeArea: {
     flex: 1,
@@ -209,44 +187,46 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
   },
   animationContainer: {
-    width: 200,
-    height: 200,
+    width: 180,
+    height: 180,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.xxl,
   },
-  haloOuter: {
+  outerRing: {
     position: 'absolute',
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: DesignTokens.accent.gold,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    borderWidth: 1,
+    borderColor: DesignTokens.text.muted, // Subtle, not accent
   },
   rotatingElement: {
-    width: 150,
-    height: 150,
+    width: 120,
+    height: 120,
     justifyContent: 'center',
     alignItems: 'center',
   },
   geometricLine: {
     position: 'absolute',
-    width: 150,
+    width: 120,
     height: 1,
-    backgroundColor: DesignTokens.accent.gold,
-    opacity: 0.4,
+    backgroundColor: DesignTokens.text.muted, // Muted, not prominent
+    opacity: 0.3,
   },
   centerDot: {
     position: 'absolute',
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: DesignTokens.accent.gold,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: DesignTokens.text.muted, // Subtle center point
+    opacity: 0.5,
   },
   loadingText: {
     fontSize: 18,
     color: DesignTokens.text.body,
     textAlign: 'center',
     fontStyle: 'italic',
+    lineHeight: 26,
   },
 });

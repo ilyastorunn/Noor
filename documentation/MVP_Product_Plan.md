@@ -22,12 +22,13 @@ Success is defined not by usage metrics, but by how often users return during mo
 
 ## 3. Navigation Structure (MVP)
 
-**Tab Bar (4 Tabs)**
+**Tab Bar (5 Tabs)**
 
 1. Home
 2. Qur'an
-3. Discover
-4. Profile
+3. Listen
+4. Explore
+5. Profile
 
 No additional tabs. No floating actions.
 
@@ -66,7 +67,7 @@ No additional tabs. No floating actions.
 5. **Listen**
 
    * Entry point to audio-based content
-   * Navigates to Discover
+   * Navigates to Listen
 
 6. **Upcoming Special Day**
 
@@ -103,7 +104,7 @@ No additional tabs. No floating actions.
 
 ---
 
-### 4.3 Discover — Structured Exploration
+### 4.3 Explore — Structured Exploration
 
 **Purpose**: Allow users to explore content without overwhelming them.
 

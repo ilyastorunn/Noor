@@ -1,37 +1,72 @@
 /**
  * Screen 3: Goals Selection
- * Vertical list of selectable pill-shaped items (multi-select)
+ * Midnight Sanctuary Theme - Calm, restrained, sacred
+ * Selection feels like acknowledgment, not activation
+ * Selected cards: thin emerald border, very subtle glow
  */
 
-import React, { useState, useRef } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Animated,
-  ScrollView,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
-import { Check } from 'lucide-react-native';
-import { DesignTokens, BorderRadius, Spacing } from '@/constants/theme';
+import { OnboardingImages } from '@/assets/images';
+import { BorderRadius, DesignTokens, Spacing } from '@/constants/theme';
 import { saveOnboardingData } from '@/services/storage';
 import type { Goal } from '@/types/onboarding';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import { Check } from 'lucide-react-native';
+import React, { useRef, useState } from 'react';
+import {
+    Animated,
+    Dimensions,
+    Image,
+    ImageSourcePropType,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+const { width } = Dimensions.get('window');
+const CARD_SIZE = (width - Spacing.lg * 3) / 2;
 
 interface GoalOption {
   id: Goal;
   label: string;
+  sublabel: string;
+  image: ImageSourcePropType;
 }
 
 const goalOptions: GoalOption[] = [
-  { id: 'grow-closer', label: 'Grow Closer to Allah' },
-  { id: 'find-peace', label: 'Find Peace & Patience (Sabr)' },
-  { id: 'sleep-better', label: 'Sleep Better (Sunnah Routine)' },
-  { id: 'focus-prayer', label: 'Focus in Prayer (Khushu)' },
-  { id: 'connect-quran', label: 'Connect with the Quran' },
+  { 
+    id: 'grow-closer', 
+    label: 'Grow Closer',
+    sublabel: 'To Allah',
+    image: OnboardingImages.goals.growCloser,
+  },
+  { 
+    id: 'find-peace', 
+    label: 'Find Peace',
+    sublabel: 'Sabr & Patience',
+    image: OnboardingImages.goals.findPeace,
+  },
+  { 
+    id: 'sleep-better', 
+    label: 'Sleep Better',
+    sublabel: 'Sunnah Routine',
+    image: OnboardingImages.goals.sleepBetter,
+  },
+  { 
+    id: 'focus-prayer', 
+    label: 'Focus in Prayer',
+    sublabel: 'Khushu',
+    image: OnboardingImages.goals.focusPrayer,
+  },
+  { 
+    id: 'connect-quran', 
+    label: 'Connect',
+    sublabel: 'With the Quran',
+    image: OnboardingImages.goals.connectQuran,
+  },
 ];
 
 export default function GoalsScreen() {
@@ -40,6 +75,7 @@ export default function GoalsScreen() {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const toggleGoal = async (goalId: Goal) => {
+    // Light haptic for selection - confirmation only
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     
     setSelectedGoals((prev) => {
@@ -53,12 +89,13 @@ export default function GoalsScreen() {
   const handleContinue = async () => {
     if (selectedGoals.length === 0) return;
     
+    // Medium haptic for commitment action
     await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     await saveOnboardingData({ goals: selectedGoals });
 
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 300,
+      duration: 400,
       useNativeDriver: true,
     }).start(() => {
       router.push('/onboarding/content');
@@ -66,55 +103,73 @@ export default function GoalsScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={[DesignTokens.background.primary, DesignTokens.background.secondary]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-          {/* Header */}
+          {/* Header - Gentle, guiding tone */}
           <View style={styles.header}>
             <Text style={styles.title}>What brings you here today?</Text>
             <Text style={styles.subtitle}>Choose as many as you like.</Text>
           </View>
 
-          {/* Goals List */}
+          {/* Goals Grid */}
           <ScrollView
             style={styles.scrollView}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
           >
-            {goalOptions.map((goal) => {
-              const isSelected = selectedGoals.includes(goal.id);
-              return (
-                <Pressable
-                  key={goal.id}
-                  onPress={() => toggleGoal(goal.id)}
-                  style={({ pressed }) => [
-                    styles.goalPill,
-                    isSelected && styles.goalPillSelected,
-                    pressed && styles.goalPillPressed,
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.goalLabel,
-                      isSelected && styles.goalLabelSelected,
+            <View style={styles.grid}>
+              {goalOptions.map((goal) => {
+                const isSelected = selectedGoals.includes(goal.id);
+                return (
+                  <Pressable
+                    key={goal.id}
+                    onPress={() => toggleGoal(goal.id)}
+                    style={({ pressed }) => [
+                      styles.cardPressable,
+                      pressed && styles.cardPressed,
                     ]}
                   >
-                    {goal.label}
-                  </Text>
-                  {isSelected && (
-                    <View style={styles.checkIcon}>
-                      <Check size={18} color={DesignTokens.background.primary} />
+                    <View
+                      style={[
+                        styles.card,
+                        isSelected && styles.cardSelected,
+                      ]}
+                    >
+                      {/* Check badge - only when selected */}
+                      {isSelected && (
+                        <View style={styles.checkBadge}>
+                          <Check size={12} color={DesignTokens.text.onPrimary} strokeWidth={3} />
+                        </View>
+                      )}
+                      
+                      {/* Illustration */}
+                      <View style={styles.imageContainer}>
+                        <Image
+                          source={goal.image}
+                          style={styles.cardImage}
+                          resizeMode="cover"
+                        />
+                      </View>
+                      
+                      {/* Labels */}
+                      <Text style={[
+                        styles.cardLabel,
+                        isSelected && styles.cardLabelSelected,
+                      ]}>
+                        {goal.label}
+                      </Text>
+                      <Text style={styles.cardSublabel}>
+                        {goal.sublabel}
+                      </Text>
                     </View>
-                  )}
-                </Pressable>
-              );
-            })}
+                  </Pressable>
+                );
+              })}
+            </View>
           </ScrollView>
 
-          {/* Continue Button */}
+          {/* Continue Button - Only when user commits */}
           {selectedGoals.length > 0 && (
             <Animated.View style={styles.buttonContainer}>
               <Pressable
@@ -130,13 +185,14 @@ export default function GoalsScreen() {
           )}
         </Animated.View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: DesignTokens.background.primary, // #020617 - Near-black
   },
   safeArea: {
     flex: 1,
@@ -156,11 +212,13 @@ const styles = StyleSheet.create({
     fontFamily: 'serif',
     textAlign: 'center',
     marginBottom: Spacing.sm,
+    lineHeight: 36,
   },
   subtitle: {
     fontSize: 16,
-    color: DesignTokens.text.body,
+    color: DesignTokens.text.muted,
     textAlign: 'center',
+    lineHeight: 24,
   },
   scrollView: {
     flex: 1,
@@ -168,55 +226,89 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: Spacing.lg,
   },
-  goalPill: {
+  grid: {
     flexDirection: 'row',
-    alignItems: 'center',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
+  },
+  cardPressable: {
+    marginBottom: Spacing.lg,
+  },
+  cardPressed: {
+    opacity: 0.9,
+  },
+  card: {
+    width: CARD_SIZE,
+    height: CARD_SIZE + 20,
+    borderRadius: BorderRadius.lg,
     backgroundColor: DesignTokens.background.surface,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    borderRadius: BorderRadius.full,
-    marginBottom: Spacing.md,
     borderWidth: 1,
-    borderColor: DesignTokens.border.subtle,
+    borderColor: DesignTokens.border.subtle, // Barely visible
+    overflow: 'hidden',
+    position: 'relative',
   },
-  goalPillSelected: {
-    backgroundColor: DesignTokens.accent.gold,
-    borderColor: DesignTokens.accent.gold,
+  cardSelected: {
+    // Thin emerald border - acknowledgment, not activation
+    borderColor: DesignTokens.accent.emerald,
+    borderWidth: 1.5,
+    // Very subtle glow - no loud shadows
   },
-  goalPillPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+  checkBadge: {
+    position: 'absolute',
+    top: Spacing.sm,
+    right: Spacing.sm,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: DesignTokens.accent.emerald, // Emerald for selected state
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 2,
   },
-  goalLabel: {
-    fontSize: 16,
+  imageContainer: {
+    width: '100%',
+    height: CARD_SIZE - 50,
+    overflow: 'hidden',
+    borderTopLeftRadius: BorderRadius.lg,
+    borderTopRightRadius: BorderRadius.lg,
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  cardLabel: {
+    fontSize: 14,
+    fontWeight: '500',
     color: DesignTokens.text.heading,
-    flex: 1,
+    textAlign: 'center',
+    marginTop: Spacing.sm,
   },
-  goalLabelSelected: {
-    color: DesignTokens.background.primary,
-    fontWeight: '600',
+  cardLabelSelected: {
+    color: DesignTokens.text.heading, // Same color - subtle
   },
-  checkIcon: {
-    marginLeft: Spacing.sm,
+  cardSublabel: {
+    fontSize: 11,
+    color: DesignTokens.text.muted,
+    textAlign: 'center',
+    marginTop: 2,
   },
   buttonContainer: {
     paddingVertical: Spacing.lg,
   },
   button: {
-    backgroundColor: DesignTokens.accent.gold,
+    backgroundColor: DesignTokens.accent.primary, // Khaki - ritual use
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
     borderRadius: BorderRadius.lg,
     alignItems: 'center',
+    // No heavy shadows - calm design
   },
   buttonPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
   },
   buttonText: {
     fontSize: 18,
     fontWeight: '600',
-    color: DesignTokens.background.primary,
+    color: DesignTokens.text.onPrimary,
   },
 });

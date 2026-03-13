@@ -1,25 +1,28 @@
 /**
  * Screen 2: Emotional Check-in (The Hook)
- * 2x2 Grid of visual cards for emotional state selection
+ * Midnight Sanctuary Theme - Calm, restrained, sacred
+ * Cards emerge gently from the darkness
+ * Selection feels like acknowledgment, not activation
  */
 
-import React, { useRef } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Pressable,
-  Animated,
-  Dimensions,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
-import * as Haptics from 'expo-haptics';
-import { Cloud, Star, Sun, Moon } from 'lucide-react-native';
-import { DesignTokens, BorderRadius, Spacing } from '@/constants/theme';
+import { OnboardingImages } from '@/assets/images';
+import { BorderRadius, DesignTokens, Spacing } from '@/constants/theme';
 import { saveOnboardingData } from '@/services/storage';
 import type { EmotionalState } from '@/types/onboarding';
+import * as Haptics from 'expo-haptics';
+import { useRouter } from 'expo-router';
+import React, { useRef } from 'react';
+import {
+    Animated,
+    Dimensions,
+    Image,
+    ImageSourcePropType,
+    Pressable,
+    StyleSheet,
+    Text,
+    View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 const CARD_SIZE = (width - Spacing.lg * 3) / 2;
@@ -28,8 +31,7 @@ interface EmotionalCard {
   id: EmotionalState;
   label: string;
   sublabel: string;
-  Icon: React.ComponentType<{ size: number; color: string; strokeWidth?: number }>;
-  gradientColors: [string, string];
+  image: ImageSourcePropType;
 }
 
 const emotionalCards: EmotionalCard[] = [
@@ -37,29 +39,25 @@ const emotionalCards: EmotionalCard[] = [
     id: 'anxious',
     label: 'Anxious',
     sublabel: 'Overwhelmed',
-    Icon: Cloud,
-    gradientColors: ['#1E3A5F', '#0F172A'],
+    image: OnboardingImages.moods.anxious,
   },
   {
     id: 'seeking',
     label: 'Seeking',
     sublabel: 'Lost / Empty',
-    Icon: Star,
-    gradientColors: ['#2D1B4E', '#0F172A'],
+    image: OnboardingImages.moods.seeking,
   },
   {
     id: 'grateful',
     label: 'Grateful',
     sublabel: 'Peaceful',
-    Icon: Sun,
-    gradientColors: ['#2D3A1E', '#0F172A'],
+    image: OnboardingImages.moods.grateful,
   },
   {
     id: 'weary',
     label: 'Weary',
     sublabel: 'Tired / Exhausted',
-    Icon: Moon,
-    gradientColors: ['#1E293B', '#0F172A'],
+    image: OnboardingImages.moods.weary,
   },
 ];
 
@@ -68,13 +66,14 @@ export default function EmotionalCheckinScreen() {
   const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const handleSelect = async (state: EmotionalState) => {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Haptics only for confirmation
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     await saveOnboardingData({ emotionalState: state });
 
-    // Smooth transition
+    // Gentle fade transition
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 300,
+      duration: 400,
       useNativeDriver: true,
     }).start(() => {
       router.push('/onboarding/goals');
@@ -82,19 +81,16 @@ export default function EmotionalCheckinScreen() {
   };
 
   return (
-    <LinearGradient
-      colors={[DesignTokens.background.primary, DesignTokens.background.secondary]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-          {/* Header */}
+          {/* Header - Gentle, guiding tone */}
           <View style={styles.header}>
             <Text style={styles.title}>How does your soul feel right now?</Text>
             <Text style={styles.subtitle}>Select the card that resonates with you.</Text>
           </View>
 
-          {/* Cards Grid */}
+          {/* Cards Grid - Vertical stillness priority */}
           <View style={styles.grid}>
             {emotionalCards.map((card) => (
               <Pressable
@@ -105,30 +101,32 @@ export default function EmotionalCheckinScreen() {
                   pressed && styles.cardPressed,
                 ]}
               >
-                <LinearGradient
-                  colors={card.gradientColors}
-                  style={styles.card}
-                >
-                  <card.Icon
-                    size={40}
-                    color={DesignTokens.text.heading}
-                    strokeWidth={1.5}
-                  />
+                <View style={styles.card}>
+                  {/* Illustration */}
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={card.image}
+                      style={styles.cardImage}
+                      resizeMode="cover"
+                    />
+                  </View>
+                  {/* Labels */}
                   <Text style={styles.cardLabel}>{card.label}</Text>
                   <Text style={styles.cardSublabel}>{card.sublabel}</Text>
-                </LinearGradient>
+                </View>
               </Pressable>
             ))}
           </View>
         </Animated.View>
       </SafeAreaView>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: DesignTokens.background.primary, // #020617 - Near-black
   },
   safeArea: {
     flex: 1,
@@ -148,11 +146,13 @@ const styles = StyleSheet.create({
     fontFamily: 'serif',
     textAlign: 'center',
     marginBottom: Spacing.sm,
+    lineHeight: 36, // Generous line-height
   },
   subtitle: {
     fontSize: 16,
-    color: DesignTokens.text.body,
+    color: DesignTokens.text.muted, // More muted for guidance
     textAlign: 'center',
+    lineHeight: 24,
   },
   grid: {
     flexDirection: 'row',
@@ -164,28 +164,40 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   cardPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.9, // Subtle press feedback
   },
   card: {
     width: CARD_SIZE,
-    height: CARD_SIZE,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.lg,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: CARD_SIZE + 20,
+    borderRadius: BorderRadius.lg, // 24px - soft and heavy
+    backgroundColor: DesignTokens.background.surface, // Emerges gently from bg
     borderWidth: 1,
-    borderColor: DesignTokens.border.subtle,
+    borderColor: DesignTokens.border.subtle, // rgba(255,255,255,0.04) - barely visible
+    overflow: 'hidden',
+    // No shadows - quiet design
+  },
+  imageContainer: {
+    width: '100%',
+    height: CARD_SIZE - 50,
+    overflow: 'hidden',
+    borderTopLeftRadius: BorderRadius.lg,
+    borderTopRightRadius: BorderRadius.lg,
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
   },
   cardLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     color: DesignTokens.text.heading,
-    marginTop: Spacing.md,
+    textAlign: 'center',
+    marginTop: Spacing.sm,
   },
   cardSublabel: {
-    fontSize: 14,
-    color: DesignTokens.text.body,
-    marginTop: Spacing.xs,
+    fontSize: 12,
+    color: DesignTokens.text.muted, // Muted for metadata
+    textAlign: 'center',
+    marginTop: 2,
   },
 });

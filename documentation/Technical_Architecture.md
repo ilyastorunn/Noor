@@ -8,7 +8,7 @@
 
 ### Tab Bar Configuration
 
-The app uses **Expo Router** with a file-based routing system. Four tabs are configured:
+The app uses **Expo Router** with a file-based routing system. Five tabs are configured:
 
 ```
 app/
@@ -16,11 +16,11 @@ app/
 │   ├── _layout.tsx       # Tab navigation configuration
 │   ├── index.tsx         # Home (Tab 1)
 │   ├── quran.tsx         # Qur'an (Tab 2)
-│   ├── discover.tsx      # Discover (Tab 3)
-│   └── profile.tsx       # Profile (Tab 4)
+│   ├── listen.tsx        # Listen (Tab 3)
+│   ├── explore.tsx       # Explore (Tab 4)
+│   └── profile.tsx       # Profile (Tab 5)
 ├── _layout.tsx           # Root layout with auth/onboarding logic
 ├── index.tsx             # Entry redirect
-├── modal.tsx             # Modal screen
 └── onboarding/           # Onboarding flow
 ```
 
@@ -30,12 +30,13 @@ app/
 |-----|-------|------|---------|
 | Home | `/(tabs)/` | Home | Daily spiritual direction |
 | Qur'an | `/(tabs)/quran` | BookOpen | Calm, focused reading |
-| Discover | `/(tabs)/discover` | Compass | Structured exploration |
+| Listen | `/(tabs)/listen` | Headphones | Prophet stories and duas |
+| Explore | `/(tabs)/explore` | Compass | Structured exploration |
 | Profile | `/(tabs)/profile` | User | Personal settings |
 
 ### Navigation Rules
 
-- ✅ 4 tabs only
+- ✅ 5 tabs only
 - ❌ No floating action buttons
 - ❌ No additional navigation elements
 - ✅ Minimal tab bar styling (subtle border, solid background)
@@ -59,8 +60,8 @@ app/
 
 2. **Today's Path**
    - 2-3 gentle action suggestions
-   - Based on mood from onboarding/weekly check-in
-   - Example: "Read one verse • Make one dua • Reflect quietly"
+   - Based on onboarding mood, commitment, and content preferences
+   - Example: "Read one verse • Lean into patience • Protect your 15-minute daily rhythm"
 
 3. **Prayer Times**
    - Current prayer highlighted
@@ -73,7 +74,7 @@ app/
 
 5. **Listen**
    - Entry point to audio content
-   - Navigates to Discover tab
+   - Navigates to Listen tab
 
 6. **Upcoming Special Day**
    - Ramadan, Eid, Kandil countdown
@@ -126,16 +127,16 @@ app/
 
 ---
 
-### 2.3 Discover — Structured Exploration
+### 2.3 Explore — Structured Exploration
 
-**File:** `app/(tabs)/discover.tsx`
+**File:** `app/(tabs)/explore.tsx`
 
 **Purpose:** Allow users to explore content without overwhelming them.
 
 **Components:**
 
 1. **Header**
-   - "Discover" title (serif)
+   - "Explore" title (serif)
    - Subtitle: "Explore at your own pace"
 
 2. **Category Grid**
@@ -251,7 +252,7 @@ app/
 ## Implementation Checklist
 
 ### Step 1 ✅
-- [x] Tab bar with 4 tabs
+- [x] Tab bar with 5 tabs
 - [x] Expo Router file structure
 - [x] Proper navigation icons (Lucide)
 - [x] Dark theme styling
@@ -259,7 +260,7 @@ app/
 ### Step 2 ✅
 - [x] Home screen with all 6 sections
 - [x] Qur'an screen with daily reading + Surah modal
-- [x] Discover screen with 6 category cards
+- [x] Explore screen with 6 category cards
 - [x] Profile screen with all 5 sections
 
 ### Step 3 (Next)
